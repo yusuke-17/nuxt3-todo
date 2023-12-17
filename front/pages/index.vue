@@ -16,12 +16,47 @@ const addTsk = () => {
       console.error("Error:", error);
     });
 };
+
+const editTask = (taskId) => {
+  const newTask = prompt("タスクを更新", task.value);
+  if (newTask !== null) {
+    useFetch("/api/task", {
+      method: "PUT",
+      body: { id: taskId, task: newTask },
+      force: true,
+    })
+      .then(() => {
+        refresh();
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+};
+
+const deleteTask = (taskId) => {
+  useFetch("/api/task", {
+    method: "DELETE",
+    body: { id: taskId },
+    force: true,
+  })
+    .then(() => {
+      refresh();
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+};
 </script>
 <template>
   <div>
     <h1>Main Page</h1>
     <ul>
-      <li v-for="task in tasks" :key="task.id">{{ task.task }}</li>
+      <li v-for="task in tasks" :key="task.id">
+        {{ task.task }}
+        <button @click="editTask(task.id)">編集</button>
+        <button @click="deleteTask(task.id)">削除</button>
+      </li>
     </ul>
     <form @submit.prevent="addTsk">
       <div>

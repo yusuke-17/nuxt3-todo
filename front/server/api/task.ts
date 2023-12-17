@@ -18,4 +18,19 @@ export default defineEventHandler(async (event) => {
     console.log(newTask);
     return newTask;
   }
+  if (event.node.req.method === "DELETE") {
+    const body = await readBody(event);
+    await prisma.task.delete({
+      where: {
+        id: body.id,
+      },
+    });
+  }
+  if (event.node.req.method === "PUT") {
+    const body = await readBody(event);
+    await prisma.task.update({
+      where: { id: body.id },
+      data: { task: body.task },
+    });
+  }
 });
